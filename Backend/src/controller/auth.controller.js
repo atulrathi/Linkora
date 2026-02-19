@@ -108,6 +108,7 @@ exports.login = async (req, res, next) => {
     res.status(200).json({
       message: "Login successful",
       user,
+      token,
     });
   } catch (error) {
     next(error);
@@ -135,7 +136,16 @@ exports.verifyOtp = async (req, res, next) => {
 
     user.isVerified = true;
     await user.save();
- 
+
+    const token = generateToken(user._id);
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
     await Otp.deleteMany({ user: user._id });
 
     res.status(200).json({
