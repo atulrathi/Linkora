@@ -36,23 +36,25 @@ exports.register = async (req, res, next) => {
 
 await sendEmail(
   email,
-  "Verify Your Togetherly Account",
-  `Hello,
+  "Verify Your Linkora Account",
+  `Hi there,
 
-Thank you for signing up for Togetherly!
+Thank you for creating an account with Linkora. We're excited to have you on board.
 
-Your One-Time Password (OTP) to verify your account is:
+To complete your registration, please use the following One-Time Password (OTP):
 
-${otp}
+  ${otp}
 
-Please enter this OTP in the app to complete your registration. 
+Enter this code in the app to verify your email address and activate your account.
 
-This OTP is valid for 10 minutes. If you did not request this, please ignore this email.
+This code is valid for 10 minutes. If you did not create a Linkora account, you can safely ignore this email — no action is required.
 
-Welcome to Togetherly! 🚀
+If you have any questions or need assistance, feel free to reach out to our support team at any time.
 
-Best regards,
-The Togetherly Team`
+Welcome to Linkora.
+
+Warm regards,
+The Linkora Team`
 );
 
 
