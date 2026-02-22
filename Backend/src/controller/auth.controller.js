@@ -17,7 +17,9 @@ exports.register = async (req, res, next) => {
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
+
     const hashedPassword = await hashPassword(password);
+
     const user = await User.create({
       name,
       email,
@@ -31,45 +33,32 @@ exports.register = async (req, res, next) => {
     await Otp.create({
       user: user._id,
       otp,
-      expiresAt: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes
+      expiresAt: new Date(Date.now() + 10 * 60 * 1000),
     });
 
-await sendEmail(
-  email,
-  "Verify Your Linkora Account",
-  `Hi there,
-
-Thank you for creating an account with Linkora. We're excited to have you on board.
-
-To complete your registration, please use the following One-Time Password (OTP):
-
-  ${otp}
-
-Enter this code in the app to verify your email address and activate your account.
-
-This code is valid for 10 minutes. If you did not create a Linkora account, you can safely ignore this email — no action is required.
-
-If you have any questions or need assistance, feel free to reach out to our support team at any time.
-
-Welcome to Linkora.
-
-Warm regards,
-The Linkora Team`
-);
-
-
+    // ✅ generate token
     const token = generateToken(user._id);
 
     res.cookie("token", token, {
       httpOnly: true,
-      sameSite: "lax",
+      sameSite: "none",   // IMPORTANT for Vercel
+      secure: true,       // REQUIRED HTTPS
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
+    // ✅ SEND RESPONSE IMMEDIATELY
     res.status(201).json({
       message: "User registered successfully",
       user,
     });
+
+    // ✅ EMAIL SENT AFTER RESPONSE (background)
+    sendEmail(
+      email,
+      "Verify Your Linkora Account",
+      `Your OTP is ${otp}`
+    ).catch(err => console.error("Email failed:", err));
+
   } catch (error) {
     next(error);
   }
