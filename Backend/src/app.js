@@ -25,6 +25,6 @@ app.use("/auth",authRoute);
 app.use("/post",postRoute);
 app.use("/comment",comment);
 app.use("/follow",follow);
-app.use("/users",userRoute)
+app.use("/users",userRoute);
 
 module.exports = app;
