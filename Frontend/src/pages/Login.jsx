@@ -42,12 +42,12 @@ export default function Login() {
 
     setLoading(true);
     try {
-      await axiosInstance.post("/auth/login", {
+     let user = await axiosInstance.post("/auth/login", {
         email:    form.email.trim(),
         password: form.password,
       });
 
-      navigate("/home");
+      navigate(`/home/${user.data.user}`);
 
     } catch (err) {
       const status = err.response?.status;

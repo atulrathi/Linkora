@@ -6,7 +6,7 @@ const getPosts = async (req, res) => {
     const limit = 10;
 
     const posts = await Post.find()
-      .populate("author", "name email profilePic")
+      .populate("author", "name email  profilePic")
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
       .limit(limit);

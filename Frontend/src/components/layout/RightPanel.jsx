@@ -1,25 +1,29 @@
 import { useState } from "react";
-import { UserPlus, Check } from "lucide-react";
+import { Search, TrendingUp } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-import Card from "../ui/Card";
+const TRENDING = [
+  { category: "Technology", tag: "#ReactJS",        posts: "12.4K" },
+  { category: "Design",     tag: "Tailwind CSS 4.0", posts: "8.2K"  },
+  { category: "Sports",     tag: "Champions League", posts: "45K"   },
+  { category: "Music",      tag: "#NewAlbumDrop",    posts: "3.1K"  },
+];
 
-/** Suggested accounts — replace with real API data. */
-const SUGGESTED_USERS = [
-  { id: 1, username: "samira",   displayName: "Samira K.",    mutuals: 4  },
-  { id: 2, username: "jordan",   displayName: "Jordan Lee",   mutuals: 2  },
-  { id: 3, username: "priya_d",  displayName: "Priya Desai",  mutuals: 7  },
-  { id: 4, username: "marcello", displayName: "Marcello R.",  mutuals: 1  },
+const SUGGESTIONS = [
+  { id: 1, name: "Jane Smith",    username: "janesmith",  initial: "J" },
+  { id: 2, name: "Alex Chen",     username: "alexchen",   initial: "A" },
+  { id: 3, name: "Sarah Kim",     username: "sarahkim",   initial: "S" },
 ];
 
 /**
- * RightPanel — Suggested accounts sidebar.
+ * RightPanel — Twitter-style right sidebar.
  *
- * Displays a "Who to Follow" card with follow/unfollow toggles.
+ * Contains a search bar, trending topics, and suggested accounts.
  * Visible only on extra-large screens.
  */
 export default function RightPanel() {
   const [followed, setFollowed] = useState(new Set());
+  const [query, setQuery]       = useState("");
 
   const toggleFollow = (id) =>
     setFollowed((prev) => {
@@ -29,97 +33,113 @@ export default function RightPanel() {
     });
 
   return (
-    <aside className="hidden w-72 shrink-0 xl:block">
-      <Card>
-        {/* Panel header */}
-        <div className="mb-5">
-          <h2 className="text-base font-semibold text-white">Who to Follow</h2>
-          <p className="mt-0.5 text-xs text-gray-500">
-            People you might know based on your activity.
-          </p>
+    <aside className="sticky top-0 hidden h-screen w-80 shrink-0 overflow-y-auto border-l border-white/[0.05] px-4 py-6 xl:block">
+
+      {/* Search */}
+      <div className="relative mb-6">
+        <Search
+          size={15}
+          aria-hidden="true"
+          className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500"
+        />
+        <input
+          type="search"
+          placeholder="Search"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          className="w-full rounded-2xl border border-white/[0.06] bg-white/[0.04] py-2.5 pl-10 pr-4 text-sm text-white placeholder-gray-600 transition-all duration-200 focus:border-indigo-500/40 focus:bg-white/[0.06] focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+        />
+      </div>
+
+      {/* Trending */}
+      <section className="mb-6 overflow-hidden rounded-2xl border border-white/[0.05] bg-white/[0.02]">
+        <div className="flex items-center gap-2 border-b border-white/[0.05] px-4 py-3">
+          <TrendingUp size={15} className="text-indigo-400" aria-hidden="true" />
+          <h2 className="text-sm font-semibold text-white">Trending</h2>
         </div>
 
-        {/* Suggested user list */}
-        <ul className="space-y-3">
-          {SUGGESTED_USERS.map(({ id, username, displayName, mutuals }) => {
+        <ul>
+          {TRENDING.map(({ category, tag, posts }, index) => (
+            <li key={tag}>
+              <button className="group w-full px-4 py-3 text-left transition-colors duration-150 hover:bg-white/[0.03]">
+                <p className="text-[11px] text-gray-600">{category}</p>
+                <p className="mt-0.5 text-sm font-semibold text-white">{tag}</p>
+                <p className="mt-0.5 text-[11px] text-gray-600">{posts} posts</p>
+              </button>
+              {index < TRENDING.length - 1 && (
+                <div className="mx-4 h-px bg-white/[0.04]" aria-hidden="true" />
+              )}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      {/* Who to follow */}
+      <section className="overflow-hidden rounded-2xl border border-white/[0.05] bg-white/[0.02]">
+        <div className="border-b border-white/[0.05] px-4 py-3">
+          <h2 className="text-sm font-semibold text-white">Who to Follow</h2>
+        </div>
+
+        <ul>
+          {SUGGESTIONS.map(({ id, name, username, initial }, index) => {
             const isFollowing = followed.has(id);
-
             return (
-              <li key={id} className="flex items-center justify-between gap-3">
+              <li key={id}>
+                <div className="flex items-center justify-between gap-3 px-4 py-3">
+                  {/* Avatar + info */}
+                  <div className="flex min-w-0 items-center gap-3">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500/30 to-violet-600/30 text-sm font-semibold text-indigo-200 ring-1 ring-white/10">
+                      {initial}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-semibold text-white">{name}</p>
+                      <p className="truncate text-xs text-gray-500">@{username}</p>
+                    </div>
+                  </div>
 
-                {/* Avatar placeholder + user info */}
-                <div className="flex min-w-0 items-center gap-3">
-                  <div
-                    aria-hidden="true"
-                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500/40 to-violet-600/40 text-sm font-semibold text-indigo-200 ring-1 ring-white/10"
+                  {/* Follow toggle */}
+                  <motion.button
+                    whileTap={{ scale: 0.94 }}
+                    onClick={() => toggleFollow(id)}
+                    aria-label={isFollowing ? `Unfollow ${name}` : `Follow ${name}`}
+                    className={`
+                      shrink-0 rounded-2xl px-4 py-1.5 text-xs font-semibold transition-all duration-200
+                      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20
+                      ${isFollowing
+                        ? "bg-transparent text-white ring-1 ring-white/20 hover:bg-red-500/10 hover:text-red-400 hover:ring-red-500/20"
+                        : "bg-white text-black hover:bg-gray-100"
+                      }
+                    `}
                   >
-                    {displayName[0]}
-                  </div>
-
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-medium text-white">
-                      {displayName}
-                    </p>
-                    <p className="truncate text-xs text-gray-500">
-                      @{username} · {mutuals} mutual{mutuals !== 1 ? "s" : ""}
-                    </p>
-                  </div>
+                    <AnimatePresence mode="wait" initial={false}>
+                      <motion.span
+                        key={isFollowing ? "following" : "follow"}
+                        initial={{ opacity: 0, scale: 0.85 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{    opacity: 0, scale: 0.85 }}
+                        transition={{ duration: 0.12 }}
+                      >
+                        {isFollowing ? "Following" : "Follow"}
+                      </motion.span>
+                    </AnimatePresence>
+                  </motion.button>
                 </div>
 
-                {/* Follow / Following toggle */}
-                <motion.button
-                  onClick={() => toggleFollow(id)}
-                  whileTap={{ scale: 0.92 }}
-                  aria-label={isFollowing ? `Unfollow ${displayName}` : `Follow ${displayName}`}
-                  className={`
-                    flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium
-                    ring-1 transition-all duration-200 focus-visible:outline-none
-                    focus-visible:ring-2 focus-visible:ring-indigo-500/60
-                    ${isFollowing
-                      ? "bg-white/5 text-gray-400 ring-white/10 hover:bg-red-500/10 hover:text-red-400 hover:ring-red-500/20"
-                      : "bg-indigo-500/10 text-indigo-300 ring-indigo-500/20 hover:bg-indigo-500/20"
-                    }
-                  `}
-                >
-                  <AnimatePresence mode="wait" initial={false}>
-                    {isFollowing ? (
-                      <motion.span
-                        key="following"
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.8 }}
-                        transition={{ duration: 0.15 }}
-                        className="flex items-center gap-1"
-                      >
-                        <Check size={11} aria-hidden="true" />
-                        Following
-                      </motion.span>
-                    ) : (
-                      <motion.span
-                        key="follow"
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.8 }}
-                        transition={{ duration: 0.15 }}
-                        className="flex items-center gap-1"
-                      >
-                        <UserPlus size={11} aria-hidden="true" />
-                        Follow
-                      </motion.span>
-                    )}
-                  </AnimatePresence>
-                </motion.button>
-
+                {index < SUGGESTIONS.length - 1 && (
+                  <div className="mx-4 h-px bg-white/[0.04]" aria-hidden="true" />
+                )}
               </li>
             );
           })}
         </ul>
 
-        {/* Footer link */}
-        <button className="mt-5 w-full text-center text-xs text-indigo-400 transition-colors hover:text-indigo-300">
-          View more suggestions
-        </button>
-      </Card>
+        <div className="px-4 py-3">
+          <button className="text-xs text-indigo-400 transition-colors hover:text-indigo-300 focus-visible:outline-none">
+            Show more
+          </button>
+        </div>
+      </section>
+
     </aside>
   );
 }

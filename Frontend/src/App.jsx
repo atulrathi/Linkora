@@ -1,6 +1,8 @@
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 
+import ProtectedRoute from "./components/layout/ProtectedRoute/ProtectedRoute";
+
 import Home        from "./pages/Home";
 import Messages    from "./pages/Messages";
 import Profile     from "./pages/Profile";
@@ -11,17 +13,9 @@ import Navbar      from "./components/layout/Navbar";
 
 /**
  * Routes on which the global navbar should not be rendered.
- * Auth and verification pages use a full-screen, immersive layout.
  */
 const AUTH_ROUTES = ["/", "/register", "/verify-email"];
 
-/**
- * AppLayout — Conditionally renders the Navbar.
- *
- * Auth pages (login, register, email verification) use a full-screen
- * layout with no navigation bar. All other pages receive the standard
- * navbar shell.
- */
 function AppLayout() {
   const { pathname } = useLocation();
   const isAuthPage = AUTH_ROUTES.includes(pathname);
@@ -33,18 +27,43 @@ function AppLayout() {
       <main className={`relative z-10 ${isAuthPage ? "" : "pb-24 md:pb-0"}`}>
         <AnimatePresence mode="wait">
           <Routes>
-            {/* Auth routes — full screen, no navbar */}
-            <Route path="/"             element={<Login />}       />
-            <Route path="/register"     element={<Register />}    />
+
+            {/* Public Routes */}
+            <Route path="/"             element={<Login />} />
+            <Route path="/register"     element={<Register />} />
             <Route path="/verify-email" element={<VerifyEmail />} />
 
-            {/* App routes — with navbar */}
-            <Route path="/home"              element={<Home />}     />
-            <Route path="/messages"          element={<Messages />} />
-            <Route path="/profile/:username" element={<Profile />}  />
+            {/* Protected Routes */}
+            <Route
+              path="/home/:username"
+              element={
+                <ProtectedRoute>
+                  <Home />
+                </ProtectedRoute>
+              }
+            />
 
-            {/* Catch-all: redirect unknown routes to the login page */}
+            <Route
+              path="/messages/:username"
+              element={
+                <ProtectedRoute>
+                  <Messages />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/profile/:username"
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Catch-all */}
             <Route path="*" element={<Navigate to="/" replace />} />
+
           </Routes>
         </AnimatePresence>
       </main>
@@ -52,29 +71,23 @@ function AppLayout() {
   );
 }
 
-/**
- * App — Root application component.
- *
- * Applies the global dark background, ambient glow effects, and
- * noise texture overlay before delegating to AppLayout for routing.
- */
 function App() {
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#090e1a] text-white">
 
-      {/* Ambient background glow — top center */}
+      {/* Top Glow */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute left-1/2 top-0 h-[700px] w-[700px] -translate-x-1/2 rounded-full bg-indigo-600/15 blur-[140px]"
       />
 
-      {/* Ambient background glow — bottom right */}
+      {/* Bottom Glow */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute bottom-0 right-0 h-[400px] w-[400px] rounded-full bg-violet-700/10 blur-[120px]"
       />
 
-      {/* Subtle noise texture overlay for depth */}
+      {/* Noise Texture */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 opacity-[0.03]"

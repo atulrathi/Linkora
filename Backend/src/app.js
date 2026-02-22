@@ -6,6 +6,7 @@ const postRoute = require("./Routers/postroutes");
 const comment = require("./Routers/commentroute");
 const follow = require("./Routers/followroute")
 const cors = require("cors");
+const userRoute = require("./Routers/userroute")
 
 //Middlewares
 app.use(cookieParser());
@@ -24,5 +25,6 @@ app.use("/auth",authRoute);
 app.use("/post",postRoute);
 app.use("/comment",comment);
 app.use("/follow",follow);
+app.use("/users",userRoute)
 
 module.exports = app;
