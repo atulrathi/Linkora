@@ -1,19 +1,22 @@
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+} from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 
 import ProtectedRoute from "./components/layout/ProtectedRoute/ProtectedRoute";
 
-import Home        from "./pages/Home";
-import Messages    from "./pages/Messages";
-import Profile     from "./pages/Profile";
-import Login       from "./pages/Login";
-import Register    from "./pages/Register";
+import Home from "./pages/Home";
+import Messages from "./pages/Messages";
+import Profile from "./pages/Profile";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 import VerifyEmail from "./pages/VerifyEmail";
-import Navbar      from "./components/layout/Navbar";
+import Navbar from "./components/layout/Navbar";
 
-/**
- * Routes on which the global navbar should not be rendered.
- */
 const AUTH_ROUTES = ["/", "/register", "/verify-email"];
 
 function AppLayout() {
@@ -27,10 +30,9 @@ function AppLayout() {
       <main className={`relative z-10 ${isAuthPage ? "" : "pb-24 md:pb-0"}`}>
         <AnimatePresence mode="wait">
           <Routes>
-
             {/* Public Routes */}
-            <Route path="/"             element={<Login />} />
-            <Route path="/register"     element={<Register />} />
+            <Route path="/" element={<Login />} />
+            <Route path="/register" element={<Register />} />
             <Route path="/verify-email" element={<VerifyEmail />} />
 
             {/* Protected Routes */}
@@ -63,7 +65,6 @@ function AppLayout() {
 
             {/* Catch-all */}
             <Route path="*" element={<Navigate to="/" replace />} />
-
           </Routes>
         </AnimatePresence>
       </main>
@@ -74,7 +75,6 @@ function AppLayout() {
 function App() {
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#090e1a] text-white">
-
       {/* Top Glow */}
       <div
         aria-hidden="true"
@@ -102,7 +102,6 @@ function App() {
       <Router>
         <AppLayout />
       </Router>
-
     </div>
   );
 }

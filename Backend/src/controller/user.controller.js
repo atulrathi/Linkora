@@ -1,17 +1,6 @@
 const User = require("../models/usermodel");
 const Post = require("../models/postmodel");
 
-/**
- * GET /users/:username
- *
- * Returns a user's public profile data along with their post count.
- * Sensitive fields (password, googleId, email) are excluded from the response.
- *
- * Response:
- *   - 200 OK        — User found and returned.
- *   - 404 Not Found — No user exists with this username.
- *   - 500 Internal  — An unexpected server error occurred.
- */
 const getUserByUsername = async (req, res) => {
   try {
     const id = req.user._id;
@@ -43,6 +32,8 @@ const getUserByUsername = async (req, res) => {
         postCount,
         isVerified:   user.isVerified,
         createdAt:    user.createdAt,
+        profilePic:   user.profilePic,
+        coverPhoto:   user.coverPhoto
       },
     });
 
@@ -56,43 +47,48 @@ const getUserByUsername = async (req, res) => {
   }
 };
 
-/**
- * GET /auth/me
- *
- * Returns the currently authenticated user's data.
- * Requires the user to be logged in (auth middleware must set req.user).
- *
- * Response:
- *   - 200 OK        — Authenticated user data returned.
- *   - 401 Unauthorised — No active session found.
- *   - 500 Internal  — An unexpected server error occurred.
- */
-const getMe = async (req, res) => {
+const uploadProfileImage = async (req, res) => {
   try {
-    const user = await User.findById(req.user._id)
-      .select("-password -googleId")
-      .lean();
+    const user = await User.findById(req.user._id);
 
-    if (!user) {
-      return res.status(401).json({
-        success: false,
-        message: "Session is invalid. Please sign in again.",
-      });
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
     }
 
-    return res.status(200).json({
+    user.profilePic = req.file.path;
+    await user.save();
+
+    res.status(200).json({
       success: true,
-      user,
+      message: "Profile image uploaded",
+      imageUrl: user.profilePic
     });
 
   } catch (error) {
-    console.error("[getMe]", error);
-
-    return res.status(500).json({
-      success: false,
-      message: "An unexpected error occurred. Please try again.",
-    });
+    res.status(500).json({ message: error.message });
   }
 };
 
-module.exports = { getUserByUsername, getMe };
+const uploadcoverphoto = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+
+    user.coverPhoto = req.file.path;
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Cover photo uploaded",
+      imageUrl: user.coverPhoto
+    });
+
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = { getUserByUsername , uploadProfileImage , uploadcoverphoto };

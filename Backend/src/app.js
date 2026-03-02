@@ -1,32 +1,37 @@
 const express = require("express");
 const app = express();
 const cookieParser = require("cookie-parser");
+const cors = require("cors");
+
 const authRoute = require("./Routers/authroute");
 const postRoute = require("./Routers/postroutes");
 const comment = require("./Routers/commentroute");
-const follow = require("./Routers/followroute")
-const cors = require("cors");
-const userRoute = require("./Routers/userroute")
+const follow = require("./Routers/followroute");
+const userRoute = require("./Routers/userroute");
 
-//Middlewares
-app.use(cookieParser());
-app.use(express.json());
-app.use(cors({
-  origin:process.env.FRONTEND_URL,
-  credentials:true
-}));
-
+// ✅ REQUIRED FOR RENDER HTTPS COOKIES
 app.set("trust proxy", 1);
 
-//Routes
+// ✅ CORS FIRST
+app.use(cors({
+  origin: process.env.FRONTEND_URL,
+  credentials: true,
+  methods: ["GET","POST","PUT","DELETE","PATCH"],
+  allowedHeaders: ["Content-Type","Authorization"]
+}));
+
+app.use(express.json());
+app.use(cookieParser());
+
+// Routes
 app.get("/", (req, res) => {
-  res.send("API running 🚀"); 
+  res.send("API running 🚀");
 });
 
-app.use("/auth",authRoute);
-app.use("/post",postRoute);
-app.use("/comment",comment);
-app.use("/follow",follow);
-app.use("/users",userRoute);
+app.use("/auth", authRoute);
+app.use("/post", postRoute);
+app.use("/comment", comment);
+app.use("/follow", follow);
+app.use("/users", userRoute);
 
 module.exports = app;

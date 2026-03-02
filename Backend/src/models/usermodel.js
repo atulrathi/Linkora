@@ -8,87 +8,95 @@ const userSchema = new mongoose.Schema(
       trim: true,
       minlength: 2,
       maxlength: 50,
-      index: true
+      index: true,
+    },
+    profilePic: {
+      type: String,
+      default: "",
+    },
+    coverPhoto: {
+      type: String,
+      default: "",
     },
 
     username: {
       type: String,
       trim: true,
       lowercase: true,
-      default: null
+      default: null,
     },
 
     email: {
       type: String,
       trim: true,
       lowercase: true,
-      default: null
+      default: null,
     },
 
     password: {
       type: String,
       select: false,
-      default: null
+      default: null,
     },
 
     authProvider: {
       type: String,
       enum: ["local", "google"],
-      default: "local"
+      default: "local",
     },
 
     googleId: {
       type: String,
-      default: null
+      default: null,
     },
 
     avatar: {
       type: String,
-      default: null
+      default: null,
     },
 
     bio: {
       type: String,
       maxlength: 200,
-      default: ""
+      default: "",
     },
 
     followers: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User"
-      }
+        ref: "User",
+      },
     ],
 
     following: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User"
-      }
+        ref: "User",
+      },
     ],
 
     isVerified: {
       type: Boolean,
       default: false,
-      index: true
+      index: true,
     },
 
     isActive: {
       type: Boolean,
       default: true,
-      index: true
+      index: true,
     },
 
     lastLoginAt: {
       type: Date,
       default: null,
-      index: true
-    }
+      index: true,
+    },
   },
   {
     timestamps: true,
-    versionKey: false
-  }
+    versionKey: false,
+  },
 );
 
 userSchema.index(
@@ -96,9 +104,9 @@ userSchema.index(
   {
     unique: true,
     partialFilterExpression: {
-      email: { $type: "string" }
-    }
-  }
+      email: { $type: "string" },
+    },
+  },
 );
 
 userSchema.index(
@@ -106,9 +114,9 @@ userSchema.index(
   {
     unique: true,
     partialFilterExpression: {
-      username: { $type: "string" }
-    }
-  }
+      username: { $type: "string" },
+    },
+  },
 );
 
 userSchema.index(
@@ -116,9 +124,9 @@ userSchema.index(
   {
     unique: true,
     partialFilterExpression: {
-      googleId: { $exists: true, $ne: null }
-    }
-  }
+      googleId: { $exists: true, $ne: null },
+    },
+  },
 );
 
 userSchema.index({ createdAt: -1 });

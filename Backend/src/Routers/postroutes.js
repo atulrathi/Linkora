@@ -5,6 +5,7 @@ const {getPosts} = require("../controller/feedpost")
 const {protect} = require("../Middleware/auth.middleware")
 
 router.post("/create",protect,createPost);
+router.get("/userpost",protect,getPosts);
 router.get("/feed",protect,getPosts);
 router.post("/like/:postId",protect,toggleLike);
 router.delete("/:postId",protect,deletePost)
