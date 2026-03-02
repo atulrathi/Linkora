@@ -2,17 +2,12 @@ const express = require("express");
 const app = express();
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
-
 const authRoute = require("./Routers/authroute");
 const postRoute = require("./Routers/postroutes");
 const comment = require("./Routers/commentroute");
 const follow = require("./Routers/followroute");
 const userRoute = require("./Routers/userroute");
 
-// ✅ REQUIRED FOR RENDER HTTPS COOKIES
-app.set("trust proxy", 1);
-
-// ✅ CORS FIRST
 app.use(cors({
   origin: process.env.FRONTEND_URL,
   credentials: true,
