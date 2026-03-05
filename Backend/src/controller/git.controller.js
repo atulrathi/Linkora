@@ -31,16 +31,7 @@ async function githubcallback(req, res) {
     user.AccessToken = tokenResponse.data.access_token;
     await user.save();
     
-    const userResponse = await axios.get(
-      "https://api.github.com/user/repos",
-      {
-        headers: {
-          Authorization: `Bearer ${user.AccessToken}`,
-        },
-      }
-    );
-    
-    res.json(userResponse.data);
+    res.redirect(`${process.env.FRONTEND_URL}/profile/${user.username}`);
 
 
   } catch (error) {
