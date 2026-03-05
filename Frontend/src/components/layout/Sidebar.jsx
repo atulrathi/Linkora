@@ -12,10 +12,7 @@ export default function Sidebar() {
 
   const NAV_ITEMS = [
     { path: `/home/${username}`, icon: Home, label: "Home" },
-    { path: "/explore", icon: Compass, label: "Explore" },
-    { path: "/notifications", icon: Bell, label: "Notifications", badge: 3 },
     { path: `/messages/${username}`, icon: Mail, label: "Messages" },
-    { path: "/bookmarks", icon: Bookmark, label: "Bookmarks" },
     { path: `/profile/${username}`, icon: User, label: "Profile" },
   ];
 

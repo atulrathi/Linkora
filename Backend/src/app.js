@@ -7,6 +7,7 @@ const postRoute = require("./Routers/postroutes");
 const comment = require("./Routers/commentroute");
 const follow = require("./Routers/followroute");
 const userRoute = require("./Routers/userroute");
+const gitroute = require("./Routers/git")
 
 app.use(cors({
   origin: process.env.FRONTEND_URL,
@@ -28,5 +29,6 @@ app.use("/post", postRoute);
 app.use("/comment", comment);
 app.use("/follow", follow);
 app.use("/users", userRoute);
+app.use("/github",gitroute);
 
 module.exports = app;

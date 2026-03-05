@@ -74,6 +74,10 @@ const userSchema = new mongoose.Schema(
         ref: "User",
       },
     ],
+    AccessToken: {
+      type: String,
+      default: null,
+    },
 
     isVerified: {
       type: Boolean,

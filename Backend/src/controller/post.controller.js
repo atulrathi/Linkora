@@ -2,12 +2,11 @@ const Post = require("../models/postmodel");
 
 const createPost = async (req, res) => {
   try {
-    const { content, images } = req.body;
+    const { content} = req.body;
 
     const post = await Post.create({
       author: req.user._id,
       content,
-      images,
     });
 
     res.status(201).json({
