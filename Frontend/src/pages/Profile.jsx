@@ -650,7 +650,7 @@ export default function Profile() {
 
   // ── GitHub connect ────────────────────────────────────────────────
   const handleConnectGitHub = () => {
-    window.location.href = "http://localhost:3000/github/Oauth";
+    window.location.href = "https://linkora-three.vercel.app/github/Oauth";
   };
 
   // ── New post prepended to feed ────────────────────────────────────
