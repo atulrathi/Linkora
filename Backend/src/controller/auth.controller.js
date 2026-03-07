@@ -36,28 +36,15 @@ exports.register = async (req, res, next) => {
       expiresAt: new Date(Date.now() + 10 * 60 * 1000),
     });
 
-    // ✅ generate token
-    const token = generateToken(user._id);
-res.cookie("token", token, {
-  httpOnly: true,
-  secure: true,
-  sameSite: "none",
-  path: "/",
-  maxAge: 7 * 24 * 60 * 60 * 1000,
-});
-
-    // ✅ SEND RESPONSE IMMEDIATELY
-    res.status(201).json({
-      message: "User registered successfully",
-      user,
-    });
-
-    // ✅ EMAIL SENT AFTER RESPONSE (background)
-    sendEmail(
+    await sendEmail(
       email,
       "Verify Your Linkora Account",
       `Your OTP is ${otp}`
     ).catch(err => console.error("Email failed:", err));
+
+      res.status(201).json({
+      message: "User registered successfully",
+    });
 
   } catch (error) {
     next(error);
@@ -86,6 +73,7 @@ exports.login = async (req, res, next) => {
     }
 
     user.lastLoginAt = new Date();
+    user.isDisabled = false;
     await user.save();
 
     const token = generateToken(user._id);
@@ -99,7 +87,7 @@ res.cookie("token", token, {
 });
 
     res.status(200).json({
-      user:user.username,
+      success:"login "
     });
   } catch (error) {
     next(error);

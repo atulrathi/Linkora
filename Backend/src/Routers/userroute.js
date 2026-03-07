@@ -7,5 +7,7 @@ const upload = require("../Middleware/upload.middleware")
 router.get("/",protect,userController.getUserByUsername);
 router.post("/upload/profilepic",protect,upload.single("image"),userController.uploadProfileImage);
 router.post("/upload/coverphoto",protect,upload.single("image"),userController.uploadcoverphoto);
+router.post("/addbio",protect,userController.addBio);
+router.post("/changeusername",protect,userController.changeUsername);
 
 module.exports = router;

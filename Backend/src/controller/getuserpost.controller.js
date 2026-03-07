@@ -26,7 +26,7 @@ const getUserPosts = async (req, res) => {
     const sortOrder = req.query.order === "asc" ? 1 : -1;
 
     const [posts, total] = await Promise.all([
-      Post.find({ author: userId })
+      Post.find({ author: userId , isDeleted: false })
         .select("title content createdAt updatedAt likes") 
         .populate("author", "name profilePic")      
         .sort({ [sortField]: sortOrder })

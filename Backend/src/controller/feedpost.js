@@ -5,7 +5,7 @@ const getPosts = async (req, res) => {
     const page = Number(req.query.page) || 1;
     const limit = 10;
 
-    const posts = await Post.find()
+    const posts = await Post.find({isDeleted:false})
       .populate("author", "name email  profilePic")
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)

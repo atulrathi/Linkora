@@ -7,7 +7,7 @@ const addComment = async (req, res) => {
     const { text } = req.body;
     const postId = req.params.postId;
 
-    const post = await Post.findById(postId);
+    const post = await Post.findById(postId , {isDeleted:false});
 
     if (!post || post.isDeleted) {
       return res.status(404).json({ message: "Post not found" });

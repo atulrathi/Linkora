@@ -1,18 +1,30 @@
 const Post = require("../models/postmodel");
+const User = require("../models/usermodel")
 
 const createPost = async (req, res) => {
   try {
     const { content} = req.body;
+    const userId = req.user._id;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
 
     const post = await Post.create({
       author: req.user._id,
       content,
     });
 
+    user.posts.push(post._id);
+    await user.save();
+
     res.status(201).json({
       success: true,
       message: "Post created successfully",
-      post,
     });
 
   } catch (error) {
